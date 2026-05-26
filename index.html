@@ -2,564 +2,221 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1280, initial-scale=1.0">
-    <title>Mechanical Engineering & Tech Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Engine // Engineering & Computing Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght=400;700&family=Inter:wght=300;400;600&display=swap');
-        .font-display { font-family: 'Orbitron', sans-serif; }
-        .font-body { font-family: 'Inter', sans-serif; }
-        
-        body { background-color: #020617; overflow-x: auto; }
-        .glow-violet { box-shadow: 0 0 25px rgba(139, 92, 246, 0.25); }
-        .glow-emerald { box-shadow: 0 0 25px rgba(16, 185, 129, 0.25); }
-        .glow-card:hover {
-            box-shadow: 0 0 35px rgba(59, 130, 246, 0.35);
-            border-color: #3b82f6;
-            transform: translateY(-4px);
-        }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e1b4b; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #4c1d95; }
+        body { font-family: 'Inter', sans-serif; background-color: #030712; }
+        .font-tech { font-family: 'Orbitron', sans-serif; }
+        .glow-glow:hover { box-shadow: 0 0 25px rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
-<body class="font-body text-slate-100 antialiased selection:bg-violet-600 selection:text-white">
+<body class="text-slate-200 antialiased selection:bg-violet-600 selection:text-white">
 
-    <div class="fixed inset-0 -z-10 pointer-events-auto" id="canvas-container"></div>
+    <div class="fixed inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0"></div>
 
-    <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md font-display">
-        <div class="bg-slate-900 border border-violet-500/40 p-8 rounded-2xl w-[400px] text-center space-y-6 shadow-2xl glow-violet">
-            <div class="text-violet-400 text-3xl"><i class="fa-solid fa-shield-halved animate-pulse"></i></div>
-            <h3 class="text-sm uppercase tracking-widest text-slate-200">Security Gateway Challenge</h3>
-            <input type="password" id="auth-key-input" placeholder="ENTER ACCESS CODE" class="w-full bg-slate-950 border border-slate-800 text-slate-100 text-center py-3 rounded-xl tracking-widest text-xs focus:outline-none focus:border-violet-500 font-mono">
-            <div class="flex gap-3 text-xs uppercase tracking-wider">
-                <button onclick="closeAuthModal()" class="w-1/2 bg-slate-950 text-slate-400 py-3 rounded-xl hover:bg-slate-800 transition-all">Abort</button>
-                <button onclick="verifyAdminAccess()" class="w-1/2 bg-gradient-to-r from-violet-600 to-blue-600 text-white py-3 rounded-xl font-bold hover:opacity-90 transition-all">Verify</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 font-display">
-        <div id="blueprint-toolbar" class="hidden flex gap-2 bg-slate-900/90 border border-emerald-500/50 p-2 rounded-xl backdrop-blur-md shadow-2xl glow-emerald">
-            <button onclick="spawnNewModule('columns')" class="bg-slate-950 hover:bg-emerald-600 text-emerald-400 hover:text-white text-[10px] px-3 py-2 rounded-lg border border-slate-800 uppercase tracking-wider transition-all">
-                <i class="fa-solid fa-table-columns mr-1"></i> + Columns Box
-            </button>
-            <button onclick="spawnNewModule('metrics')" class="bg-slate-950 hover:bg-emerald-600 text-emerald-400 hover:text-white text-[10px] px-3 py-2 rounded-lg border border-slate-800 uppercase tracking-wider transition-all">
-                <i class="fa-solid fa-cubes mr-1"></i> + Metric Row
-            </button>
-            <button onclick="spawnNewModule('graph')" class="bg-slate-950 hover:bg-emerald-600 text-emerald-400 hover:text-white text-[10px] px-3 py-2 rounded-lg border border-slate-800 uppercase tracking-wider transition-all">
-                <i class="fa-solid fa-chart-line mr-1"></i> + Static Graph
-            </button>
-        </div>
-        <div id="save-banner" class="hidden bg-indigo-950/90 border border-violet-500 text-violet-400 px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-lg animate-pulse">
-            ⚡ LIVE CLOUD OVERRIDE MODE ACTIVE — SECURITY SYNC ENGAGED
-        </div>
-        <button onclick="toggleAdminMode()" id="admin-btn" class="bg-slate-900/90 border border-violet-500/40 text-violet-400 hover:text-white hover:bg-violet-600 px-5 py-3 rounded-xl flex items-center gap-2 transition-all shadow-xl backdrop-blur-md text-xs uppercase tracking-widest">
-            <i class="fa-solid fa-lock" id="lock-icon"></i> <span id="btn-text">Access Core Control</span>
-        </button>
-    </div>
-
-    <div class="w-[1280px] mx-auto min-h-screen bg-slate-950/80 backdrop-blur-sm border-x border-slate-900 flex flex-col relative shadow-2xl">
+    <div class="relative max-w-5xl mx-auto px-6 py-12 z-10 min-h-screen flex flex-col justify-between">
         
-        <nav class="w-full border-b border-slate-900 bg-slate-950/70 backdrop-blur-md h-20 flex justify-between items-center px-12 z-30 sticky top-0">
-            <div class="font-display text-xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-blue-400">
-                <i class="fa-solid fa-atom animate-spin [animation-duration:12s] mr-2 text-violet-500"></i>ENGINE_CORE
+        <header class="flex justify-between items-center border-b border-slate-900 pb-6 mb-16 backdrop-blur-sm sticky top-0 bg-slate-950/40 z-50">
+            <div class="flex items-center gap-3">
+                <div class="w-3 h-3 bg-violet-500 rounded-sm animate-pulse"></div>
+                <span id="nav-brand" class="font-tech text-xs tracking-widest text-slate-400 uppercase">ENGINE_CORE // AP</span>
             </div>
-            <div class="flex space-x-8 font-display text-xs uppercase tracking-wider text-slate-400">
-                <a href="#hero" class="hover:text-violet-400 transition-colors">Home</a>
+            <nav class="flex gap-6 text-xs font-tech uppercase tracking-wider text-slate-500">
                 <a href="#about" class="hover:text-violet-400 transition-colors">Specs</a>
-                <a href="#projects" class="hover:text-violet-400 transition-colors">Repos</a>
-                <a href="#dynamic-workspace" class="hover:text-violet-400 transition-colors">Custom Blocks</a>
-            </div>
-        </nav>
+                <a href="#blueprints" class="hover:text-violet-400 transition-colors">Blueprints</a>
+                <a href="#control-panel" class="hover:text-emerald-400 transition-colors border border-dashed border-slate-800 px-2 py-0.5 rounded">Console</a>
+            </nav>
+        </header>
 
-        <section id="hero" class="h-[540px] flex items-center px-16 relative border-b border-slate-900">
-            <div class="grid grid-cols-12 gap-12 w-full items-center">
-                <div class="col-span-7 space-y-6">
-                    <span class="text-xs font-mono text-violet-400 uppercase tracking-widest block font-bold">// INTEGRATED ENGINEERING MATRIX</span>
-                    <h1 class="font-display text-5xl font-extrabold tracking-tight leading-tight uppercase text-slate-100">
-                        Bridging <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-blue-400" id="hero-title" data-edit-id="hero-title">Mechanical Engineering</span> <br>With Computing Logic
+        <main class="space-y-24">
+            
+            <section id="about" class="grid md:grid-cols-3 gap-12 items-center pt-4">
+                <div class="md:col-span-2 space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-violet-950/30 border border-violet-900/50 px-3 py-1 rounded-full text-[10px] uppercase font-tech tracking-widest text-violet-400">
+                        <i class="fa-solid fa-microchip"></i> System Operational
+                    </div>
+                    <h1 id="hero-title" class="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                        Bridging Physical Engineering With <span class="text-transparent bg-clip-text bg-gradient-to-r fancy-gradient from-violet-400 to-cyan-400">Computational Logic</span>
                     </h1>
-                    <p class="text-slate-400 text-base max-w-xl leading-relaxed" id="hero-desc" data-edit-id="hero-desc">
-                        Mechanical engineering undergraduate integrating thermodynamic structural profiles with computational algorithms, CAD component optimization design paths, and automation modeling layers.
-                    </p>
-                    <div class="flex gap-4 pt-2 font-display text-xs tracking-wider uppercase">
-                        <a href="#dynamic-workspace" class="bg-gradient-to-r from-violet-600 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:opacity-90 shadow-lg shadow-violet-600/20 transition-all">Launch Matrix Builder</a>
-                    </div>
-                </div>
-
-                <div class="col-span-5 flex justify-center relative">
-                    <div class="w-80 h-80 rounded-2xl border border-slate-900 bg-slate-900/40 p-3 relative group overflow-hidden shadow-2xl">
-                        <img id="profile-img" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800" alt="Profile Architecture" class="w-full h-full object-cover rounded-xl border border-slate-800/80">
-                        <div id="photo-overlay" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm items-center justify-center flex-col gap-2 cursor-pointer transition-all" onclick="triggerPhotoUpload()">
-                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-violet-400 animate-bounce"></i>
-                            <span class="font-display text-[10px] text-slate-300 tracking-widest uppercase">Stream High-Res File (5GB Max)</span>
-                        </div>
-                        <input type="file" id="photo-input" class="hidden" accept="image/*" onchange="processNewPhoto(this)">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="about" class="py-20 px-16 border-b border-slate-900 bg-slate-950/40">
-            <div class="grid grid-cols-12 gap-12 items-center">
-                <div class="col-span-5 space-y-4">
-                    <span class="text-xs font-mono text-blue-400 uppercase tracking-widest">// SPECIFICATION STANDARDS</span>
-                    <h2 class="font-display text-3xl font-bold uppercase text-slate-100">Core Architecture</h2>
-                    <p class="text-slate-400 text-sm leading-relaxed" id="about-text" data-edit-id="about-text">
-                        Interfacing fundamental mechanical load tolerances with modern programming logic. Specialization routes focus on execution loops, array manipulations, and structural automation analysis engines.
+                    <p id="hero-desc" class="text-sm text-slate-400 leading-relaxed max-w-xl">
+                        Loading core systems data profile templates...
                     </p>
                 </div>
-                
-                <div class="col-span-7 grid grid-cols-2 gap-4 font-display">
-                    <div class="bg-slate-900/40 border border-slate-900/60 p-6 rounded-xl text-center glow-card transition-all">
-                        <div class="text-3xl font-bold text-violet-500 mb-1" id="stat-1" data-edit-id="stat-1">93%</div>
-                        <div class="text-[10px] uppercase tracking-wider text-slate-400">Academic Core Matrix</div>
-                    </div>
-                    <div class="bg-slate-900/40 border border-slate-900/60 p-6 rounded-xl text-center glow-card transition-all">
-                        <div class="text-3xl font-bold text-blue-400 mb-1" id="stat-2" data-edit-id="stat-2">5★</div>
-                        <div class="text-[10px] uppercase tracking-wider text-slate-400">C Coding Badge</div>
-                    </div>
-                    <div class="bg-slate-900/40 border border-slate-900/60 p-6 rounded-xl text-center glow-card transition-all">
-                        <div class="text-3xl font-bold text-indigo-400 mb-1" id="stat-3" data-edit-id="stat-3">CAD</div>
-                        <div class="text-[10px] uppercase tracking-wider text-slate-400">SolidWorks Optimization</div>
-                    </div>
-                    <div class="bg-slate-900/40 border border-slate-900/60 p-6 rounded-xl text-center glow-card transition-all">
-                        <div class="text-3xl font-bold text-fuchsia-500 mb-1" id="stat-4" data-edit-id="stat-4">2026</div>
-                        <div class="text-[10px] uppercase tracking-wider text-slate-400">Structural Computation</div>
+                <div class="flex justify-center md:justify-end">
+                    <div class="relative w-64 h-64 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl p-2 group">
+                        <img id="profile-img" src="profile.jpg" alt="Profile" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="projects" class="py-20 px-16 border-b border-slate-900">
-            <div class="text-center space-y-3 mb-12">
-                <span class="text-xs font-mono text-violet-400 uppercase tracking-widest block">// EXPERIMENTAL BLUEPRINTS</span>
-                <h2 class="font-display text-3xl font-bold uppercase tracking-wider text-slate-100">Primary Core Repositories</h2>
-            </div>
-            <div class="grid grid-cols-2 gap-8">
-                <div class="bg-slate-900/30 border border-slate-900 rounded-2xl overflow-hidden hover:border-violet-500/40 transition-all group flex flex-col justify-between shadow-xl">
-                    <div class="bg-gradient-to-r from-slate-950 to-slate-900 p-8 border-b border-slate-900/60 relative overflow-hidden">
-                        <div class="absolute -right-10 -bottom-10 text-9xl font-display text-slate-800/10 font-bold select-none">01</div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-[10px] font-mono px-2.5 py-1 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20 uppercase tracking-widest">Computational</span>
-                            <i class="fa-solid fa-circle-nodes text-slate-700 group-hover:text-violet-500 transition-colors"></i>
-                        </div>
-                        <h3 class="font-display text-lg font-bold uppercase tracking-wide text-slate-100 group-hover:text-violet-400 transition-colors" id="proj-title-1" data-edit-id="proj-title-1">Quantum Logic Structural Controls</h3>
-                    </div>
-                    <div class="p-8 flex-grow">
-                        <p class="text-slate-400 text-xs leading-relaxed mb-6" id="proj-desc-1" data-edit-id="proj-desc-1">Map state vector logic frameworks onto standard automation matrices. Translating baseline structural properties to accelerated simulation curves seamlessly.</p>
-                        <div class="flex flex-wrap gap-2 text-[10px] font-mono text-slate-400"><span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Qiskit Matrix</span><span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Python Core</span></div>
-                    </div>
+            <section id="metrics-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                </section>
+
+            <section id="blueprints" class="space-y-8">
+                <div class="border-l-2 border-violet-500 pl-4">
+                    <h2 class="font-tech text-xs tracking-widest text-violet-400 uppercase font-bold">Experimental Blueprints</h2>
+                    <p class="text-xl font-bold text-white tracking-tight">Primary Core Repositories</p>
                 </div>
-                <div class="bg-slate-900/30 border border-slate-900 rounded-2xl overflow-hidden hover:border-blue-500/40 transition-all group flex flex-col justify-between shadow-xl">
-                    <div class="bg-gradient-to-r from-slate-950 to-slate-900 p-8 border-b border-slate-900/60 relative overflow-hidden">
-                        <div class="absolute -right-10 -bottom-10 text-9xl font-display text-slate-800/10 font-bold select-none">02</div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-[10px] font-mono px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-widest">Parametric CAD</span>
-                            <i class="fa-solid fa-gears text-slate-700 group-hover:text-blue-500 transition-colors"></i>
-                        </div>
-                        <h3 class="font-display text-lg font-bold uppercase tracking-wide text-slate-100 group-hover:text-blue-400 transition-colors" id="proj-title-2" data-edit-id="proj-title-2">Automated Fluid Simulation Assemblies</h3>
+                <div id="projects-grid" class="grid md:grid-cols-2 gap-6">
                     </div>
-                    <div class="p-8 flex-grow">
-                        <p class="text-slate-400 text-xs leading-relaxed mb-6" id="proj-desc-2" data-edit-id="proj-desc-2">Developing high-tolerance system layouts under variable parametric constraints. Analyzing vector yield boundaries on computational component assemblies.</p>
-                        <div class="flex flex-wrap gap-2 text-[10px] font-mono text-slate-400"><span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">SolidWorks</span><span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Finite Element</span></div>
+            </section>
+
+            <section id="control-panel" class="border border-slate-900 bg-slate-900/10 rounded-2xl p-6 space-y-6 backdrop-blur-md">
+                <div class="flex items-center justify-between border-b border-slate-900 pb-4">
+                    <div class="flex items-center gap-2 font-tech text-xs tracking-widest uppercase text-slate-400">
+                        <i class="fa-solid fa-sliders text-emerald-500"></i> Local Variable Config Override
                     </div>
+                    <span class="text-[10px] font-mono text-slate-600">STATE: STANDALONE_OK</span>
                 </div>
-            </div>
-        </section>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Test modifications on the fly! Use the quick file reader below to cycle your profile picture cache memory locally.
+                </p>
+                <div class="flex flex-wrap gap-4 items-center">
+                    <label class="cursor-pointer bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs text-slate-300 px-4 py-2.5 rounded-xl font-tech tracking-wider uppercase transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-camera"></i> Stage New Image Asset
+                        <input type="file" accept="image/*" class="hidden" onchange="processLocalPhoto(this)">
+                    </label>
+                    <button onclick="resetLocalMemory()" class="bg-slate-950 border border-dashed border-slate-800 hover:border-rose-900/60 text-[10px] text-slate-500 hover:text-rose-400 px-3 py-2.5 rounded-xl font-mono uppercase tracking-widest transition-colors">
+                        Purge Local Cache
+                    </button>
+                </div>
+            </section>
 
-        <section id="dynamic-workspace" class="py-20 px-16 flex-grow space-y-12 bg-slate-950/20">
-            <div class="border-b border-slate-900 pb-4">
-                <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest block">// COMPONENT MATRIX WORKSPACE</span>
-                <h2 class="font-display text-2xl font-bold uppercase tracking-wider text-slate-100">Modular Layout Extensions</h2>
-            </div>
+        </main>
 
-            <div id="modular-injection-vault" class="space-y-16"></div>
-        </section>
-
-        <footer class="w-full border-t border-slate-900 py-6 text-center text-xs font-mono text-slate-500 bg-slate-950">
-            &copy; 2026 ENGINE_CORE Systems Architecture. Synchronized Global Satellite Arrays via Firebase Cloud.
+        <footer class="border-t border-slate-900 mt-24 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-slate-600 uppercase tracking-widest">
+            <div>© 2026 Engine_Core Systems Architecture.</div>
+            <div class="flex gap-2 items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Compiled Local Cache Mode</div>
         </footer>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-
     <script>
-        let isAdminActive = false;
-        const SECRET_KEY = "booyahboy";
-
-        // 🛠️ PLUG IN YOUR UNIQUE FIREBASE CONNECTION CONFIG HERE
-        const firebaseConfig = {
-            apiKey: "YOUR_FIREBASE_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Fire Up Connected Core Systems
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const storage = firebase.storage();
-        
-                   // Memory Architecture Map
-        let localPayloadMemory = {
-            "hero-title": "Mechanical Engineering Layouts",
-            "hero-desc": "Mechanical engineering undergraduate integrating thermodynamic structural profiles with computational algorithms, CAD component optimization design paths, and automation modeling layers.",
-            "about-text": "Interfacing fundamental mechanical load tolerances with modern programming logic. Specialization routes focus on execution loops, array manipulations, and structural automation analysis engines.",
-            "stat-1": "93%", "stat-2": "5★", "stat-3": "CAD", "stat-4": "2026",
-            "proj-title-1": "Quantum Logic Structural Controls",
-            "proj-desc-1": "Map state vector logic frameworks onto standard automation matrices. Translating baseline structural properties to accelerated simulation curves seamlessly.",
-            "proj-title-2": "Automated Fluid Simulation Assemblies",
-            "proj-desc-2": "Developing high-tolerance system layouts under variable parametric constraints. Analyzing vector yield boundaries on computational component assemblies.",
-            "profile_photo_url": "profile.jpg", // Points to a local file in your repository folder
-            "modules": []
-        };
-
-
-
-                              // Local Browser Storage Handshake Loop
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLocalData = localStorage.getItem('portfolio_local_matrix');
-            if (savedLocalData) {
-                const parsedData = JSON.parse(savedLocalData);
-                Object.keys(parsedData).forEach(key => {
-                    localPayloadMemory[key] = parsedData[key];
-                });
-            }
-            compileMasterLayout();
-        });
-
-
-               function compileMasterLayout() {
-            // Core Graphic Engine: Enforce profile image sync from state memory
-            if (localPayloadMemory["profile_photo_url"] && localPayloadMemory["profile_photo_url"].trim() !== "") {
-                document.getElementById('profile-img').src = localPayloadMemory["profile_photo_url"];
-            }
-
-            // Apply text definitions across static nodes
-            document.querySelectorAll('[data-edit-id]').forEach(element => {
-                const lookupID = element.getAttribute('data-edit-id');
-                if (localPayloadMemory[lookupID]) element.innerHTML = localPayloadMemory[lookupID];
-            });
+        /**
+         * ⚙️ CONFIGURATION SCHEMA DICTIONARY
+         * Edit the plain-text fields inside this object to update the entire portfolio instantly.
+         */
+        const BASELINE_PORTFOLIO_DATA = {
+            "brand": "SAI_TEJA // AP",
+            "hero-title": "Integrating Mechanical Frameworks With <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400'>Quantum Engineering Logic</span>",
+            "hero-desc": "Mechanical Engineering undergraduate specializing in merging core structural automation logic with computational design algorithms, matrix state vectors, and accelerated component simulation workflows.",
+            "profile_photo_url": "profile.jpg", // Default local repository fallback path
             
-            const vault = document.getElementById('modular-injection-vault');
-            vault.innerHTML = ""; // Flatten canvas view to loop new sequence blocks
-
-            if (!localPayloadMemory["modules"] || localPayloadMemory["modules"].length === 0) {
-                vault.innerHTML = `<div class="text-center text-slate-600 text-xs py-12 font-mono uppercase tracking-widest border border-dashed border-slate-900 rounded-xl">No active layout extensions deployed. Initialize Core Controls to design.</div>`;
-                return;
-            }
-
-            localPayloadMemory["modules"].forEach((module, idx) => {
-                const wrapper = document.createElement('div');
-                wrapper.className = "relative group/mod w-full border border-slate-900 bg-slate-900/10 p-8 rounded-2xl transition-all";
-                
-                let deleteUI = isAdminActive ? `<button onclick="purgeModule(${idx})" class="absolute -top-3 -right-3 bg-rose-600 hover:bg-rose-700 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-lg transition-transform hover:scale-110 z-20"><i class="fa-solid fa-trash-can"></i></button>` : '';
-                let structuralContent = "";
-
-                if(module.type === 'columns') {
-                    structuralContent = `
-                        <div class="grid grid-cols-2 gap-8">
-                            <div class="space-y-2">
-                                <h3 class="font-display text-sm text-violet-400 uppercase tracking-wider" data-mod-idx="${idx}" data-field="title1" ${isAdminActive?'contenteditable="true"':''}>${module.title1 || 'Structural Dimension Unit'}</h3>
-                                <p class="text-xs text-slate-400 leading-relaxed" data-mod-idx="${idx}" data-field="desc1" ${isAdminActive?'contenteditable="true"':''}>${module.desc1 || 'Configure functional structural column metrics mapping load strain variations.'}</p>
-                            </div>
-                            <div class="space-y-2 border-l border-slate-900 pl-8">
-                                <h3 class="font-display text-sm text-blue-400 uppercase tracking-wider" data-mod-idx="${idx}" data-field="title2" ${isAdminActive?'contenteditable="true"':''}>${module.title2 || 'System Threshold Parameter'}</h3>
-                                <p class="text-xs text-slate-400 leading-relaxed" data-mod-idx="${idx}" data-field="desc2" ${isAdminActive?'contenteditable="true"':''}>${module.desc2 || 'Calculates programmatic optimization parameters across localized hardware arrays safely.'}</p>
-                            </div>
-                        </div>`;
-                } 
-                else if(module.type === 'metrics') {
-                    structuralContent = `
-                        <div class="grid grid-cols-3 gap-6 font-display text-center">
-                            <div class="bg-slate-900/40 border border-slate-900/80 p-5 rounded-xl">
-                                <div class="text-2xl font-bold text-violet-400 mb-1" data-mod-idx="${idx}" data-field="stat1" ${isAdminActive?'contenteditable="true"':''}>${module.stat1 || '93%'}</div>
-                                <div class="text-[9px] uppercase tracking-widest text-slate-500" data-mod-idx="${idx}" data-field="lbl1" ${isAdminActive?'contenteditable="true"':''}>${module.lbl1 || 'Performance Baseline'}</div>
-                            </div>
-                            <div class="bg-slate-900/40 border border-slate-900/80 p-5 rounded-xl">
-                                <div class="text-2xl font-bold text-emerald-400 mb-1" data-mod-idx="${idx}" data-field="stat2" ${isAdminActive?'contenteditable="true"':''}>${module.stat2 || '5-Star'}</div>
-                                <div class="text-[9px] uppercase tracking-widest text-slate-500" data-mod-idx="${idx}" data-field="lbl2" ${isAdminActive?'contenteditable="true"':''}>${module.lbl2 || 'C Code Array Score'}</div>
-                            </div>
-                            <div class="bg-slate-900/40 border border-slate-900/80 p-5 rounded-xl">
-                                <div class="text-2xl font-bold text-blue-400 mb-1" data-mod-idx="${idx}" data-field="stat3" ${isAdminActive?'contenteditable="true"':''}>${module.stat3 || 'CAD/CAM'}</div>
-                                <div class="text-[9px] uppercase tracking-widest text-slate-500" data-mod-idx="${idx}" data-field="lbl3" ${isAdminActive?'contenteditable="true"':''}>${module.lbl3 || 'Simulation Index'}</div>
-                            </div>
-                        </div>`;
-                } 
-                else if(module.type === 'graph') {
-                    structuralContent = `
-                        <div class="space-y-4">
-                            <div class="text-center"><span class="font-display text-xs text-slate-400 uppercase tracking-widest" data-mod-idx="${idx}" data-field="gTitle" ${isAdminActive?'contenteditable="true"':''}>${module.gTitle || 'Thermodynamic Force Analysis Spectral Curve'}</span></div>
-                            <div class="h-64 w-full relative"><canvas id="canvas-chart-${idx}"></canvas></div>
-                        </div>`;
-                }
-
-                wrapper.innerHTML = deleteUI + structuralContent;
-                vault.appendChild(wrapper);
-
-                if(module.type === 'graph') renderStaticChart(`canvas-chart-${idx}`);
-            });
-
-            if (isAdminActive) injectEditingStyles();
-        }
-
-
-        function renderStaticChart(canvasId) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'],
-                    datasets: [{
-                        label: 'Stress Distribution Matrix',
-                        data: [15, 22, 38, 30, 48, 65],
-                        borderColor: '#8b5cf6',
-                        backgroundColor: 'rgba(139, 92, 246, 0.03)',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#3b82f6',
-                        tension: 0.35
-                    }]
+            // Diagnostics Panel (Displays 4 items cleanly)
+            "metrics": [
+                { "value": "93%", "label": "Academic Matrix" },
+                { "value": "5 ★", "label": "HackerRank C Badge" },
+                { "value": "CAD", "label": "Component Design" },
+                { "value": "2026", "label": "Structural Compute" }
+            ],
+            
+            // Project Repositories Module (Displays structural asset data cards)
+            "projects": [
+                {
+                    "title": "Quantum Logic Structural Controls",
+                    "desc": "Mapping state vector logic frameworks onto industrial automation matrices. Translating physical load parameters into accelerated simulation curves.",
+                    "tag1": "Qiskit Logic",
+                    "tag2": "Python Matrix"
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: '#0f172a' }, ticks: { color: '#475569', font: { family: 'Orbitron', size: 9 } } },
-                        y: { grid: { color: '#0f172a' }, ticks: { color: '#475569', font: { family: 'Orbitron', size: 9 } } }
-                    }
+                {
+                    "title": "Automated Fluid Simulation Assemblies",
+                    "desc": "Developing structural high-tolerance layout components under variable velocity and load stress conditions inside automated rendering pipelines.",
+                    "tag1": "CAD / CAM",
+                    "tag2": "Finite Element"
                 }
-            });
-        }
+            ]
+        };
 
-        function spawnNewModule(type) {
-            localPayloadMemory["modules"].push({ type: type });
-            compileMasterLayout();
-        }
+        // Execution Storage Reference Mapping
+        let activeMemoryMap = {};
 
-        function purgeModule(idx) {
-            localPayloadMemory["modules"].splice(idx, 1);
-            compileMasterLayout();
-        }
-
-        function toggleAdminMode() {
-            if (!isAdminActive) {
-                document.getElementById('auth-modal').classList.remove('hidden');
-                document.getElementById('auth-key-input').focus();
-            } else {
-                isAdminActive = false;
-                deactivateEditingState();
-            }
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-            document.getElementById('auth-key-input').value = "";
-        }
-
-        function verifyAdminAccess() {
-            if (document.getElementById('auth-key-input').value === SECRET_KEY) {
-                isAdminActive = true;
-                closeAuthModal();
-                activateEditingState();
-            } else {
-                alert("Access Terminated.");
-                closeAuthModal();
-            }
-        }
-
-        function activateEditingState() {
-            document.getElementById('lock-icon').className = "fa-solid fa-unlock-keyhole text-emerald-400";
-            document.getElementById('btn-text').innerText = "Broadcast Layouts";
-            document.getElementById('admin-btn').classList.add('border-emerald-500', 'text-emerald-400');
-            document.getElementById('save-banner').classList.remove('hidden');
-            document.getElementById('blueprint-toolbar').classList.remove('hidden');
-            document.getElementById('photo-overlay').classList.replace('hidden', 'flex');
+        // Ingest layout definitions and translate to the viewport elements
+        function executeMasterUICompile() {
+            // Text Node Injection Mappings
+            document.getElementById('nav-brand').innerText = `ENGINE_CORE // ${activeMemoryMap.brand}`;
+            document.getElementById('hero-title').innerHTML = activeMemoryMap["hero-title"];
+            document.getElementById('hero-desc').innerText = activeMemoryMap["hero-desc"];
             
-            document.querySelectorAll('[data-edit-id]').forEach(el => el.contentEditable = "true");
-            compileMasterLayout();
-        }
+            // Check image component parameters
+            if (activeMemoryMap["profile_photo_url"]) {
+                document.getElementById('profile-img').src = activeMemoryMap["profile_photo_url"];
+            }
 
-        function injectEditingStyles() {
-            document.querySelectorAll('[data-edit-id], [data-field]').forEach(element => {
-                element.classList.add('outline', 'outline-1', 'outline-dashed', 'outline-emerald-500/60', 'bg-emerald-950/10', 'p-1', 'rounded');
+            // Compile Diagnostics Metrics Grid Layout
+            const metricsContainer = document.getElementById('metrics-grid');
+            metricsContainer.innerHTML = "";
+            activeMemoryMap.metrics.forEach(metric => {
+                metricsContainer.innerHTML += `
+                    <div class="bg-slate-900/30 border border-slate-900 p-5 rounded-2xl text-center backdrop-blur-sm">
+                        <div class="text-xl font-bold text-white font-tech tracking-wide mb-0.5">${metric.value}</div>
+                        <div class="text-[9px] uppercase tracking-widest text-slate-500 font-mono">${metric.label}</div>
+                    </div>`;
+            });
+
+            // Compile Experimental Blueprint Cards
+            const projectsContainer = document.getElementById('projects-grid');
+            projectsContainer.innerHTML = "";
+            activeMemoryMap.projects.forEach(project => {
+                projectsContainer.innerHTML += `
+                    <div class="bg-slate-900/20 border border-slate-900/80 p-6 rounded-2xl space-y-4 glow-glow transition-all duration-300">
+                        <div class="flex items-start justify-between">
+                            <h3 class="font-bold text-base text-slate-100 tracking-tight">${project.title}</h3>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-700"></i>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">${project.desc}</p>
+                        <div class="flex gap-2 pt-2">
+                            <span class="text-[9px] font-mono uppercase bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-md tracking-wider">${project.tag1}</span>
+                            <span class="text-[9px] font-mono uppercase bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-md tracking-wider">${project.tag2}</span>
+                        </div>
+                    </div>`;
             });
         }
 
-        async function deactivateEditingState() {
-            document.getElementById('btn-text').innerText = "Broadcasting...";
-            
-            // Map text updates back from standard static edit vectors
-            document.querySelectorAll('[data-edit-id]').forEach(el => {
-                localPayloadMemory[el.getAttribute('data-edit-id')] = el.innerHTML;
-            });
-
-            // Map custom text variables embedded across spawned elements 
-            document.querySelectorAll('[data-field]').forEach(element => {
-                const idx = element.getAttribute('data-mod-idx');
-                const field = element.getAttribute('data-field');
-                if(localPayloadMemory["modules"][idx]) localPayloadMemory["modules"][idx][field] = element.innerHTML;
-            });
-
-            // Stream variables array to Firebase Realtime references
-            db.ref('unified_portfolio_dataset').update(localPayloadMemory, (err) => {
-                if (!err) alert("Global sync operation successful. Cloud references updated.");
-            });
-
-            document.getElementById('lock-icon').className = "fa-solid fa-lock text-violet-400";
-            document.getElementById('btn-text').innerText = "Access Core Control";
-            document.getElementById('admin-btn').classList.remove('border-emerald-500', 'text-emerald-400');
-            document.getElementById('save-banner').classList.add('hidden');
-            document.getElementById('blueprint-toolbar').classList.add('hidden');
-            document.getElementById('photo-overlay').classList.replace('flex', 'hidden');
-
-            document.querySelectorAll('[data-edit-id]').forEach(el => el.contentEditable = "false");
-            compileMasterLayout();
-        }
-
-        function triggerPhotoUpload() { if (isAdminActive) document.getElementById('photo-input').click(); }
-        
-                        function processNewPhoto(inputElement) {
+        // Handle offline FileReader conversion loop to bypass database connection requirements
+        function processLocalPhoto(inputElement) {
             const uploadedFile = inputElement.files[0];
             if (uploadedFile) {
-                document.getElementById('btn-text').innerText = "Processing Asset String...";
-                
-                const matrixReader = new FileReader();
-                matrixReader.onload = function (e) {
+                const layoutReader = new FileReader();
+                layoutReader.onload = function (e) {
                     const dataStringURL = e.target.result;
                     
-                    // Render image instantly on viewport canvas
-                    document.getElementById('profile-img').src = dataStringURL;
-                    localPayloadMemory["profile_photo_url"] = dataStringURL;
+                    // Commit to runtime object and freeze matrix state directly inside localStorage
+                    activeMemoryMap["profile_photo_url"] = dataStringURL;
+                    localStorage.setItem('portfolio_local_matrix_v2', JSON.stringify(activeMemoryMap));
                     
-                    // Commit structural data frame to local browser storage cache
-                    localStorage.setItem('portfolio_local_matrix', JSON.stringify(localPayloadMemory));
-                    
-                    document.getElementById('btn-text').innerText = "Broadcast Layouts";
-                    alert("Local asset sync completed! Profile image layout updated successfully.");
+                    // Recompile layer interface view
+                    executeMasterUICompile();
                 };
-                
-                matrixReader.readAsDataURL(uploadedFile);
+                layoutReader.readAsDataURL(uploadedFile);
             }
         }
 
-    </script>
+        // Safety Purge Routine
+        function resetLocalMemory() {
+            localStorage.removeItem('portfolio_local_matrix_v2');
+            location.reload();
+        }
 
-    <script>
-        try {
-            const container = document.getElementById('canvas-container');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 25;
-
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            container.appendChild(renderer.domElement);
-
-            const count = 1500;
-            const geometry = new THREE.BufferGeometry();
-            const basePositions = new Float32Array(count * 3);
-            const positions = new Float32Array(count * 3);
-            const colors = new Float32Array(count * 3);
-
-            const colorViolet = new THREE.Color('#8b5cf6'); 
-            const colorBlue = new THREE.Color('#2563eb');   
-
-            for(let i = 0; i < count * 3; i+=3) {
-                const radius = 12 + Math.random() * 18;
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos((Math.random() * 2) - 1);
-                
-                const x = radius * Math.sin(phi) * Math.cos(theta);
-                const y = radius * Math.sin(phi) * Math.sin(theta);
-                const z = radius * Math.cos(phi);
-
-                basePositions[i] = x; basePositions[i+1] = y; basePositions[i+2] = z;
-                positions[i] = x;     positions[i+1] = y;     positions[i+2] = z;
-
-                const mixedColor = colorViolet.clone().lerp(colorBlue, Math.random());
-                colors[i] = mixedColor.r; colors[i+1] = mixedColor.g; colors[i+2] = mixedColor.b;
+        // Initialize application workflow boundaries
+        window.addEventListener('DOMContentLoaded', () => {
+            const preservedDataCache = localStorage.getItem('portfolio_local_matrix_v2');
+            if (preservedDataCache) {
+                activeMemoryMap = JSON.parse(preservedDataCache);
+            } else {
+                activeMemoryMap = { ...BASELINE_PORTFOLIO_DATA };
             }
-
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            const material = new THREE.PointsMaterial({ size: 0.35, vertexColors: true, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending });
-            const particleMesh = new THREE.Points(geometry, material);
-            scene.add(particleMesh);
-
-            let targetX = 0, targetY = 0, touchImpactPoint = new THREE.Vector3(999, 999, 0), splashIntensity = 0;
-
-            function handleInteractionMove(clientX, clientY) {
-                targetX = (clientX - window.innerWidth / 2) * 0.025;
-                targetY = (clientY - window.innerHeight / 2) * 0.025;
-            }
-            function triggerSplash(clientX, clientY) {
-                const ndcX = (clientX / window.innerWidth) * 2 - 1;
-                const ndcY = -(clientY / window.innerHeight) * 2 + 1;
-                touchImpactPoint.set(ndcX * 20, ndcY * 15, 0);
-                splashIntensity = 4.5;
-            }
-
-            window.addEventListener('mousemove', (e) => handleInteractionMove(e.clientX, e.clientY));
-            window.addEventListener('mousedown', (e) => triggerSplash(e.clientX, e.clientY));
-            window.addEventListener('touchmove', (e) => { if (e.touches.length > 0) handleInteractionMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-            window.addEventListener('touchstart', (e) => { if (e.touches.length > 0) { handleInteractionMove(e.touches[0].clientX, e.touches[0].clientY); triggerSplash(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: true });
-
-            let currentScroll = 0;
-            window.addEventListener('scroll', () => { currentScroll = window.scrollY * 0.015; }, { passive: true });
-
-            const clock = new THREE.Clock();
-
-            function animate3D() {
-                requestAnimationFrame(animate3D);
-                const delta = clock.getElapsedTime();
-
-                particleMesh.rotation.y = delta * 0.03;
-                particleMesh.rotation.x = delta * 0.01;
-
-                particleMesh.position.x += (targetX - particleMesh.position.x) * 0.05;
-                particleMesh.position.y += (-targetY - particleMesh.position.y) * 0.05;
-                particleMesh.position.z = currentScroll;
-
-                const posArr = geometry.attributes.position.array;
-                for(let i = 0; i < count * 3; i+=3) {
-                    let bx = basePositions[i], by = basePositions[i+1], bz = basePositions[i+2];
-                    let pVec = new THREE.Vector3(bx, by, bz).applyQuaternion(particleMesh.quaternion).add(particleMesh.position);
-                    let dist = pVec.distanceTo(touchImpactPoint);
-
-                    if (dist < 8 && splashIntensity > 0) {
-                        let force = (8 - dist) * 0.15 * splashIntensity;
-                        let push = new THREE.Vector3().subVectors(pVec, touchImpactPoint).normalize().applyQuaternion(particleMesh.quaternion.clone().invert());
-                        posArr[i] = bx + push.x * force; posArr[i+1] = by + push.y * force; posArr[i+2] = bz + push.z * force;
-                    } else {
-                        posArr[i] += (bx - posArr[i]) * 0.08; posArr[i+1] += (by - posArr[i+1]) * 0.08; posArr[i+2] += (bz - posArr[i+2]) * 0.08;
-                    }
-                }
-                if (splashIntensity > 0) splashIntensity -= 0.1;
-                geometry.attributes.position.needsUpdate = true;
-                renderer.render(scene, camera);
-            }
-            animate3D();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        } catch (e) { console.error(e); }
+            executeMasterUICompile();
+        });
     </script>
 </body>
 </html>
