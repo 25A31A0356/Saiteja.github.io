@@ -35,7 +35,19 @@
 
     <div class="fixed inset-0 -z-10 pointer-events-auto" id="canvas-container"></div>
 
-    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 font-display">
+    <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md font-display">
+        <div class="bg-slate-900 border border-violet-500/40 p-8 rounded-2xl w-[400px] text-center space-y-6 shadow-2xl glow-violet">
+            <div class="text-violet-400 text-3xl"><i class="fa-solid fa-shield-halved animate-pulse"></i></div>
+            <h3 class="text-sm uppercase tracking-widest text-slate-200">Security Gateway Challenge</h3>
+            <input type="password" id="auth-key-input" placeholder="ENTER ACCESS CODE" class="w-full bg-slate-950 border border-slate-800 text-slate-100 text-center py-3 rounded-xl tracking-widest text-xs focus:outline-none focus:border-violet-500 font-mono">
+            <div class="flex gap-3 text-xs uppercase tracking-wider">
+                <button onclick="closeAuthModal()" class="w-1/2 bg-slate-950 text-slate-400 py-3 rounded-xl hover:bg-slate-800 transition-all">Abort</button>
+                <button onclick="verifyAdminAccess()" class="w-1/2 bg-gradient-to-r from-violet-600 to-blue-600 text-white py-3 rounded-xl font-bold hover:opacity-90 transition-all">Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 font-display">
         <div id="save-banner" class="hidden bg-indigo-950/90 border border-violet-500 text-violet-400 px-4 py-2 rounded-xl text-xs uppercase tracking-wider shadow-lg animate-pulse">
             ⚡ LIVE SATELLITE SYNC ACTIVE — BROADCASTING GLOBALLY
         </div>
@@ -46,7 +58,7 @@
 
     <div class="w-[1280px] mx-auto min-h-screen bg-slate-950/80 backdrop-blur-sm border-x border-slate-900 flex flex-col relative shadow-2xl">
         
-        <nav class="w-full border-b border-slate-900 bg-slate-950/70 backdrop-blur-md h-20 flex justify-between items-center px-12 z-40 sticky top-0">
+        <nav class="w-full border-b border-slate-900 bg-slate-950/70 backdrop-blur-md h-20 flex justify-between items-center px-12 z-30 sticky top-0">
             <div class="font-display text-xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-blue-400">
                 <i class="fa-solid fa-atom animate-spin [animation-duration:12s] mr-2 text-violet-500"></i>ENGINE_CORE
             </div>
@@ -179,140 +191,53 @@
     </div>
 
     <script>
-        /* =========================================================================
-           1. THREE.JS VIOLET-BLUE PLASMA MATRIX ENGINE
-           ========================================================================= */
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 25;
-
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-
-        const count = 1200;
-        const geometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(count * 3);
-        const colors = new Float32Array(count * 3);
-
-        const colorViolet = new THREE.Color('#8b5cf6'); 
-        const colorBlue = new THREE.Color('#2563eb');   
-
-        for(let i = 0; i < count * 3; i+=3) {
-            const radius = 12 + Math.random() * 18;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos((Math.random() * 2) - 1);
-            
-            positions[i] = radius * Math.sin(phi) * Math.cos(theta);
-            positions[i+1] = radius * Math.sin(phi) * Math.sin(theta);
-            positions[i+2] = radius * Math.cos(phi);
-
-            const mixedColor = colorViolet.clone().lerp(colorBlue, Math.random());
-            colors[i] = mixedColor.r;
-            colors[i+1] = mixedColor.g;
-            colors[i+2] = mixedColor.b;
-        }
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        const material = new THREE.PointsMaterial({
-            size: 0.3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
-
-        const particleMesh = new THREE.Points(geometry, material);
-        scene.add(particleMesh);
-
-        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
-        window.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX - window.innerWidth / 2) * 0.03;
-            mouseY = (e.clientY - window.innerHeight / 2) * 0.03;
-        });
-
-        let currentScroll = 0;
-        window.addEventListener('scroll', () => { currentScroll = window.scrollY * 0.015; }, { passive: true });
-
-        const clock = new THREE.Clock();
-
-        function animate3D() {
-            requestAnimationFrame(animate3D);
-            const delta = clock.getElapsedTime();
-
-            particleMesh.rotation.y = delta * 0.04;
-            particleMesh.rotation.x = delta * 0.015;
-
-            targetX += (mouseX - targetX) * 0.05;
-            targetY += (mouseY - targetY) * 0.05;
-
-            particleMesh.position.x = targetX;
-            particleMesh.position.y = -targetY;
-            particleMesh.position.z = currentScroll;
-
-            renderer.render(scene, camera);
-        }
-        animate3D();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        /* =========================================================================
-           2. GLOBAL SATELLITE CLOUD DATA SYNC NETWORK (ZERO SETUP CMS)
-           ========================================================================= */
         let isAdminActive = false;
         const SECRET_KEY = "booyahboy";
-        
-        // Secure, dedicated internet data locker path assigned to your repository
         const CLOUD_DATABASE_URL = "https://kvdb.io/W9vA36dNzK8gS2fR4tPqXy/portfolio_master_dataset";
-
         let localPayloadMemory = {};
 
-        // Fetch master layout dataset from global satellite network on startup
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(CLOUD_DATABASE_URL);
                 if (response.ok) {
                     localPayloadMemory = await response.json();
-                    
-                    // Parse text elements out to screen
                     document.querySelectorAll('[data-edit-id]').forEach(element => {
                         const lookupID = element.getAttribute('data-edit-id');
-                        if (localPayloadMemory[lookupID]) {
-                            element.innerHTML = localPayloadMemory[lookupID];
-                        }
+                        if (localPayloadMemory[lookupID]) element.innerHTML = localPayloadMemory[lookupID];
                     });
-
-                    // Parse picture element out to screen
                     if (localPayloadMemory["profile_photo_b64"]) {
                         document.getElementById('profile-img').src = localPayloadMemory["profile_photo_b64"];
                     }
                 }
             } catch (error) {
-                console.log("Initializing baseline framework values.");
+                console.log("Database initialized.");
             }
         });
 
         function toggleAdminMode() {
             if (!isAdminActive) {
-                const verificationInput = prompt("Enter Administrative Authentication Code:");
-                if (verificationInput === SECRET_KEY) {
-                    isAdminActive = true;
-                    activateEditingState();
-                } else {
-                    alert("Authentication Failed. Access Revoked.");
-                }
+                document.getElementById('auth-modal').classList.remove('hidden');
+                document.getElementById('auth-key-input').focus();
             } else {
                 isAdminActive = false;
                 deactivateEditingState();
+            }
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-key-input').value = "";
+        }
+
+        function verifyAdminAccess() {
+            const inputVal = document.getElementById('auth-key-input').value;
+            if (inputVal === SECRET_KEY) {
+                isAdminActive = true;
+                closeAuthModal();
+                activateEditingState();
+            } else {
+                alert("Authentication Failed. Access Denied.");
+                closeAuthModal();
             }
         }
 
@@ -324,193 +249,34 @@
             document.getElementById('photo-overlay').classList.replace('hidden', 'flex');
 
             document.querySelectorAll('[data-edit-id]').forEach(element => {
-                                         Quantum Mechanics Optimization Structures
-                        </h3>
-                    </div>
-                    <div class="p-8 flex-grow">
-                        <p class="text-slate-400 text-xs leading-relaxed mb-6" id="proj-desc-1" data-edit-id="proj-desc-1">
-                            Developing algorithms mapping structural optimization routes from baseline metrics to accelerated state patterns. Explores vector tracking configurations for thermal system pathways.
-                        </p>
-                        <div class="flex flex-wrap gap-2 text-[10px] font-mono text-slate-400">
-                            <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Qiskit Core</span>
-                            <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Python Systems</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900/30 border border-slate-900 rounded-2xl overflow-hidden hover:border-blue-500/40 transition-all group flex flex-col justify-between shadow-xl">
-                    <div class="bg-gradient-to-r from-slate-950 to-slate-900 p-8 border-b border-slate-900/60 relative overflow-hidden">
-                        <div class="absolute -right-10 -bottom-10 text-9xl font-display text-slate-800/10 font-bold select-none">02</div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-[10px] font-mono px-2.5 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-widest">CAD Modeling</span>
-                            <i class="fa-solid fa-gears text-slate-700 group-hover:text-blue-500 transition-colors"></i>
-                        </div>
-                        <h3 class="font-display text-lg font-bold uppercase tracking-wide text-slate-100 group-hover:text-blue-400 transition-colors" id="proj-title-2" data-edit-id="proj-title-2">
-                            Parametric Mechanical Assembly Optimization
-                        </h3>
-                    </div>
-                    <div class="p-8 flex-grow">
-                        <p class="text-slate-400 text-xs leading-relaxed mb-6" id="proj-desc-2" data-edit-id="proj-desc-2">
-                            Engineered structural layout component configurations utilizing parametric design constraint systems to map vector loads, structural engine tolerances, and material yield parameters.
-                        </p>
-                        <div class="flex flex-wrap gap-2 text-[10px] font-mono text-slate-400">
-                            <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">SolidWorks</span>
-                            <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Load Simulation</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="w-full border-t border-slate-900 py-6 text-center text-xs font-mono text-slate-500 bg-slate-950">
-            &copy; 2026 ENGINE_CORE Architecture. Secured Access Layout.
-        </footer>
-    </div>
-
-    <script>
-        /* =========================================================================
-           1. INTERACTIVE THREE.JS 3D VIOLET-BLUE PLASMA ENGINE
-           ========================================================================= */
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 25;
-
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-
-        // Core Cosmic Coordinate Mapping
-        const count = 1200;
-        const geometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(count * 3);
-        const colors = new Float32Array(count * 3);
-
-        const colorViolet = new THREE.Color('#8b5cf6'); // Radiant Violet Highlight
-        const colorBlue = new THREE.Color('#2563eb');   // Deep Tech Electric Blue
-
-        for(let i = 0; i < count * 3; i+=3) {
-            const radius = 12 + Math.random() * 18;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos((Math.random() * 2) - 1);
-            
-            positions[i] = radius * Math.sin(phi) * Math.cos(theta);
-            positions[i+1] = radius * Math.sin(phi) * Math.sin(theta);
-            positions[i+2] = radius * Math.cos(phi);
-
-            const mixedColor = colorViolet.clone().lerp(colorBlue, Math.random());
-            colors[i] = mixedColor.r;
-            colors[i+1] = mixedColor.g;
-            colors[i+2] = mixedColor.b;
-        }
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        const material = new THREE.PointsMaterial({
-            size: 0.3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
-
-        const particleMesh = new THREE.Points(geometry, material);
-        scene.add(particleMesh);
-
-        // Interaction Tracker Nodes
-        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
-        window.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX - window.innerWidth / 2) * 0.03;
-            mouseY = (e.clientY - window.innerHeight / 2) * 0.03;
-        });
-
-        let currentScroll = 0;
-        window.addEventListener('scroll', () => { currentScroll = window.scrollY * 0.015; }, { passive: true });
-
-        const clock = new THREE.Clock();
-
-        function animate3D() {
-            requestAnimationFrame(animate3D);
-            const delta = clock.getElapsedTime();
-
-            particleMesh.rotation.y = delta * 0.04;
-            particleMesh.rotation.x = delta * 0.015;
-
-            targetX += (mouseX - targetX) * 0.05;
-            targetY += (mouseY - targetY) * 0.05;
-
-            particleMesh.position.x = targetX;
-            particleMesh.position.y = -targetY;
-            particleMesh.position.z = currentScroll;
-
-            renderer.render(scene, camera);
-        }
-        animate3D();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        /* =========================================================================
-           2. LOCAL STORAGE PASSWORD SECURED ADMINISTRATIVE CMS ENGINE
-           ========================================================================= */
-        let isAdminActive = false;
-        const SECRET_KEY = "booyahboy";
-
-        // Load Persistent System Data on Page Startup
-        window.addEventListener('DOMContentLoaded', () => {
-            // Load custom text modules
-            document.querySelectorAll('[data-edit-id]').forEach(element => {
-                const savedValue = localStorage.getItem('portfolio_' + element.getAttribute('data-edit-id'));
-                if (savedValue) element.innerHTML = savedValue;
-            });
-
-            // Load saved profile picture architecture
-            const savedPhoto = localStorage.getItem('portfolio_profile_photo');
-            if (savedPhoto) {
-                document.getElementById('profile-img').src = savedPhoto;
-            }
-        });
-
-        function toggleAdminMode() {
-            if (!isAdminActive) {
-                const verificationInput = prompt("Enter Administrative Authentication Code:");
-                if (verificationInput === SECRET_KEY) {
-                    isAdminActive = true;
-                    activateEditingState();
-                } else {
-                    alert("Authentication Failed. Access Revoked.");
-                }
-            } else {
-                isAdminActive = false;
-                deactivateEditingState();
-            }
-        }
-
-        function activateEditingState() {
-            document.getElementById('lock-icon').className = "fa-solid fa-unlock-keyhole text-emerald-400";
-            document.getElementById('btn-text').innerText = "Lock Control Board";
-            document.getElementById('admin-btn').classList.add('border-emerald-500', 'text-emerald-400');
-            document.getElementById('save-banner').classList.remove('hidden');
-            document.getElementById('photo-overlay').classList.replace('hidden', 'flex');
-
-            document.querySelectorAll('[data-edit-id]').forEach(element => {
                 element.contentEditable = "true";
                 element.classList.add('outline', 'outline-1', 'outline-dashed', 'outline-violet-500', 'bg-violet-950/20', 'p-1', 'rounded');
-                
-                // Real-time Event Save Hook
-                element.addEventListener('input', () => {
-                    localStorage.setItem('portfolio_' + element.getAttribute('data-edit-id'), element.innerHTML);
-                });
             });
         }
 
-        function deactivateEditingState() {
+        async function deactivateEditingState() {
+            document.getElementById('btn-text').innerText = "Broadcasting...";
+            
+            document.querySelectorAll('[data-edit-id]').forEach(element => {
+                const lookupID = element.getAttribute('data-edit-id');
+                localPayloadMemory[lookupID] = element.innerHTML;
+            });
+
+            try {
+                const cloudSyncTx = await fetch(CLOUD_DATABASE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(localPayloadMemory)
+                });
+                if (cloudSyncTx.ok) {
+                    alert("Broadcast Complete! Changes are live across the globe.");
+                } else {
+                    alert("Sync Warning: Infrastructure timeout.");
+                }
+            } catch (err) {
+                alert("Connection loss to cloud server array.");
+            }
+
             document.getElementById('lock-icon').className = "fa-solid fa-lock text-violet-400";
             document.getElementById('btn-text').innerText = "Access Core Control";
             document.getElementById('admin-btn').classList.remove('border-emerald-500', 'text-emerald-400');
@@ -521,12 +287,8 @@
                 element.contentEditable = "false";
                 element.classList.remove('outline', 'outline-1', 'outline-dashed', 'outline-violet-500', 'bg-violet-950/20', 'p-1', 'rounded');
             });
-            alert("System configurations successfully stored locally.");
         }
 
-        /* =========================================================================
-           3. BASE64 PHOTO PROCESSING LAYER
-           ========================================================================= */
         function triggerPhotoUpload() {
             if (isAdminActive) document.getElementById('photo-input').click();
         }
@@ -534,16 +296,177 @@
         function processNewPhoto(inputElement) {
             const uploadedFile = inputElement.files[0];
             if (uploadedFile) {
+                if (uploadedFile.size > 1000000) {
+                    alert("File size exceeds optimization limit. Please use an image under 1MB.");
+                    return;
+                }
                 const processingEngine = new FileReader();
                 processingEngine.onload = function(event) {
                     const compiledBase64String = event.target.result;
-                    // Render locally instantly
                     document.getElementById('profile-img').src = compiledBase64String;
-                    // Write directly into local application cache partition
-                    localStorage.setItem('portfolio_profile_photo', compiledBase64String);
+                    localPayloadMemory["profile_photo_b64"] = compiledBase64String;
                 }
                 processingEngine.readAsDataURL(uploadedFile);
             }
+        }
+    </script>
+
+    <script>
+        try {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            
+            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 25;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const count = 1500; // Increased density for prominent splashes
+            const geometry = new THREE.BufferGeometry();
+            
+            const basePositions = new Float32Array(count * 3);
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+
+            const colorViolet = new THREE.Color('#8b5cf6'); 
+            const colorBlue = new THREE.Color('#2563eb');   
+
+            for(let i = 0; i < count * 3; i+=3) {
+                const radius = 12 + Math.random() * 18;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+
+                basePositions[i] = x; basePositions[i+1] = y; basePositions[i+2] = z;
+                positions[i] = x;     positions[i+1] = y;     positions[i+2] = z;
+
+                const mixedColor = colorViolet.clone().lerp(colorBlue, Math.random());
+                colors[i] = mixedColor.r;
+                colors[i+1] = mixedColor.g;
+                colors[i+2] = mixedColor.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.32,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.85,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particleMesh = new THREE.Points(geometry, material);
+            scene.add(particleMesh);
+
+            // Reactive Coordinate Vectors
+            let targetX = 0, targetY = 0;
+            let touchImpactPoint = new THREE.Vector3(0, 0, 0);
+            let splashIntensity = 0;
+
+            // Tracking coordinates across all devices safely
+            function handleInteractionMove(clientX, clientY) {
+                targetX = (clientX - window.innerWidth / 2) * 0.025;
+                targetY = (clientY - window.innerHeight / 2) * 0.025;
+            }
+
+            function triggerSplashExplosion(clientX, clientY) {
+                // Convert screen pixel position to normalized 3D viewport spatial layout
+                const ndcX = (clientX / window.innerWidth) * 2 - 1;
+                const ndcY = -(clientY / window.innerHeight) * 2 + 1;
+                
+                touchImpactPoint.set(ndcX * 20, ndcY * 15, 0);
+                splashIntensity = 4.0; // Explosion force value
+            }
+
+            // Desktop Mouse Listeners
+            window.addEventListener('mousemove', (e) => handleInteractionMove(e.clientX, e.clientY));
+            window.addEventListener('mousedown', (e) => triggerSplashExplosion(e.clientX, e.clientY));
+
+            // Mobile Finger Touch Listeners
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) handleInteractionMove(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            
+            window.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 0) {
+                    handleInteractionMove(e.touches[0].clientX, e.touches[0].clientY);
+                    triggerSplashExplosion(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            let currentScroll = 0;
+            window.addEventListener('scroll', () => { currentScroll = window.scrollY * 0.015; }, { passive: true });
+
+            const clock = new THREE.Clock();
+
+            function animate3D() {
+                requestAnimationFrame(animate3D);
+                const delta = clock.getElapsedTime();
+
+                particleMesh.rotation.y = delta * 0.03;
+                particleMesh.rotation.x = delta * 0.01;
+
+                particleMesh.position.x += (targetX - particleMesh.position.x) * 0.05;
+                particleMesh.position.y += (-targetY - particleMesh.position.y) * 0.05;
+                particleMesh.position.z = currentScroll;
+
+                const positionsArray = geometry.attributes.position.array;
+
+                // Process interactive splash waves through the physics nodes
+                for(let i = 0; i < count * 3; i+=3) {
+                    // Pull base geometry values
+                    let bx = basePositions[i];
+                    let by = basePositions[i+1];
+                    let bz = basePositions[i+2];
+
+                    // Form vector position for specific matrix node
+                    let particleVec = new THREE.Vector3(bx, by, bz);
+                    particleVec.applyQuaternion(particleMesh.quaternion);
+                    particleVec.add(particleMesh.position);
+
+                    let spatialDistance = particleVec.distanceTo(touchImpactPoint);
+
+                    if (spatialDistance < 8 && splashIntensity > 0) {
+                        // Blast factor calculation (inverse distance force)
+                        let blastForce = (8 - spatialDistance) * 0.12 * splashIntensity;
+                        let pushDirection = new THREE.Vector3().subVectors(particleVec, touchImpactPoint).normalize();
+                        
+                        // Push out matrix locally
+                        pushDirection.applyQuaternion(particleMesh.quaternion.clone().invert());
+                        positionsArray[i] = bx + pushDirection.x * blastForce;
+                        positionsArray[i+1] = by + pushDirection.y * blastForce;
+                        positionsArray[i+2] = bz + pushDirection.z * blastForce;
+                    } else {
+                        // Decay snap back to perfect structure grid layout smoothly
+                        positionsArray[i] += (bx - positionsArray[i]) * 0.08;
+                        positionsArray[i+1] += (by - positionsArray[i+1]) * 0.08;
+                        positionsArray[i+2] += (bz - positionsArray[i+2]) * 0.08;
+                    }
+                }
+
+                // Smoothly decay splash intensity velocity matrix over time loops
+                if (splashIntensity > 0) splashIntensity -= 0.08;
+
+                geometry.attributes.position.needsUpdate = true;
+                renderer.render(scene, camera);
+            }
+            animate3D();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        } catch (e) {
+            console.error("Graphics matrix engine failure.", e);
         }
     </script>
 </body>
