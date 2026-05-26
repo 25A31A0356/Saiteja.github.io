@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanical Engineering & Tech Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+        
+        .font-display { font-family: 'Orbitron', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Glowing Effects for that Extraordinary Look */
+        .glow-orange {
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+        }
+        .glow-card:hover {
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.4);
+            border-color: rgba(249, 115, 22, 1);
+            transform: translateY(-5px);
+        }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-body antialiased selection:bg-orange-500 selection:text-white">
+
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] -z-10"></div>
+
+    <nav class="fixed top-0 w-full z-50 backdrop-blur-md border-b border-slate-900 bg-slate-950/70">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="font-display text-xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-400">
+                <i class="fa-solid fa-gear animate-spin [animation-duration:10s] mr-2"></i>ENGINE_CORE
+            </div>
+            <div class="hidden md:flex space-x-8 font-display text-sm uppercase tracking-wider text-slate-400">
+                <a href="#hero" class="hover:text-orange-500 transition-colors">Home</a>
+                <a href="#about" class="hover:text-orange-500 transition-colors">About</a>
+                <a href="#skills" class="hover:text-orange-500 transition-colors">Core Specs</a>
+                <a href="#projects" class="hover:text-orange-500 transition-colors">Projects</a>
+                <a href="#contact" class="hover:text-orange-500 transition-colors">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero" class="min-h-screen flex items-center justify-center pt-20 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center z-10">
+            <div>
+                <span class="font-display text-orange-500 tracking-widest uppercase text-sm block mb-3 font-semibold">// FUTURE-FORWARD ENGINEERING</span>
+                <h1 class="font-display text-4xl lg:text-6xl font-bold uppercase tracking-tight leading-none mb-6">
+                    Bridging <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-400">Mechanical Systems</span> & Computational Logic
+                </h1>
+                <p class="text-slate-400 text-lg mb-8 max-w-xl">
+                    Mechanical Engineering student specializing in thermodynamic cycles, advanced IC engines, and integrating modern computational algorithms to optimize physical hardware performance.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#projects" class="font-display text-sm bg-orange-600 hover:bg-orange-500 text-white font-bold px-8 py-4 rounded-md tracking-wider transition-all transform hover:scale-105 glow-orange uppercase">
+                        View Projects
+                    </a>
+                    <a href="#contact" class="font-display text-sm border border-slate-700 hover:border-orange-500 text-slate-300 hover:text-white px-8 py-4 rounded-md tracking-wider transition-all uppercase">
+                        Get In Touch
+                    </a>
+                </div>
+            </div>
+            
+            <div class="relative flex justify-center items-center">
+                <div class="absolute w-72 h-72 bg-orange-600/10 rounded-full blur-3xl -z-10"></div>
+                <div class="border border-orange-500/20 bg-slate-900/40 backdrop-blur-xl p-8 rounded-2xl border-dashed relative w-full max-w-md aspect-square flex flex-col justify-between overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="flex justify-between items-start">
+                        <i class="fa-solid fa-microchip text-3xl text-orange-500"></i>
+                        <span class="font-display text-xs text-slate-500">// ENGINE_MATRIX_v1.0</span>
+                    </div>
+                    <div class="text-center py-6">
+                        <i class="fa-solid fa-combustion text-7xl text-amber-500/40 animate-pulse mb-4"></i>
+                        <div class="font-display text-2xl font-bold tracking-widest text-slate-200">INTERNAL COMBUSTION</div>
+                        <div class="text-xs text-orange-400 mt-2 font-mono tracking-widest">CAD • SIMULATION • OPTIMIZATION</div>
+                    </div>
+                    <div class="border-t border-slate-800 pt-4 flex justify-between text-xs font-mono text-slate-400">
+                        <div>RPM MAX: 8,500</div>
+                        <div>THERMAL EFF: OPTIMIZED</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="border-slate-900 max-w-7xl mx-auto">
+
+    <section id="about" class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-12 items-center">
+            <div class="md:col-span-2">
+                <h2 class="font-display text-3xl font-bold uppercase tracking-wider mb-6 text-slate-100">
+                    <span class="text-orange-500">//</span> Engineering Philosophy
+                </h2>
+                <p class="text-slate-400 mb-6 leading-relaxed text-lg">
+                    As a dedicated Mechanical Engineering undergraduate, my focus lies at the intersection of traditional heavy machinery and cutting-edge software integration. I analyze structural integrity, fluid dynamics, and thermodynamic systems with a digital-first mindset, deploying algorithms to solve hardware constraints.
+                </p>
+                <blockquote class="border-l-2 border-orange-500 pl-4 my-6 italic text-slate-300 bg-slate-900/30 py-3 pr-4 rounded-r-md">
+                    "True innovation occurs when the rigid predictability of metal meets the infinitely adaptable nature of code."
+                </blockquote>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-900/40 border border-slate-900 p-6 rounded-xl text-center">
+                    <div class="font-display text-3xl font-bold text-orange-500 mb-1">93%</div>
+                    <div class="text-xs uppercase tracking-wider text-slate-400">Academic Core Score</div>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-900 p-6 rounded-xl text-center">
+                    <div class="font-display text-3xl font-bold text-amber-400 mb-1">5★</div>
+                    <div class="text-xs uppercase tracking-wider text-slate-400">Coding Badges</div>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-900 p-6 rounded-xl text-center">
+                    <div class="font-display text-3xl font-bold text-slate-200 mb-1">10+</div>
+                    <div class="text-xs uppercase tracking-wider text-slate-400">CAD Assemblies</div>
+                </div>
+                <div class="bg-slate-900/40 border border-slate-900 p-6 rounded-xl text-center">
+                    <div class="font-display text-3xl font-bold text-orange-400 mb-1">2026</div>
+                    <div class="text-xs uppercase tracking-wider text-slate-400">Active Research</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="py-24 bg-slate-900/20 border-y border-slate-900 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="font-display text-xs text-orange-500 tracking-widest uppercase">// EXPERTISE MATRIX</span>
+                <h2 class="font-display text-4xl font-bold uppercase tracking-wider mt-2">Technical Competencies</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-900/50 border border-slate-900/80 p-8 rounded-xl transition-all duration-300 glow-card group">
+                    <div class="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center border border-orange-500/20 mb-6 group-hover:bg-orange-500/20 transition-all">
+                        <i class="fa-solid fa-car-engine text-orange-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-bold uppercase mb-4 tracking-wide">Mechanical Design & Automotive</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        In-depth understanding of Internal Combustion Engine cycles, structural chassis layouts, kinematics of machinery, and advanced automotive powerplants.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-900/80 p-8 rounded-xl transition-all duration-300 glow-card group">
+                    <div class="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center border border-orange-500/20 mb-6 group-hover:bg-orange-500/20 transition-all">
+                        <i class="fa-solid fa-cubes text-orange-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-bold uppercase mb-4 tracking-wide">CAD Modeling & FEA</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Proficient in creating complex parametric 3D models, manufacturing blueprints, assembly constraints, and conducting finite element analysis (FEA) testing stresses.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-900/80 p-8 rounded-xl transition-all duration-300 glow-card group">
+                    <div class="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center border border-orange-500/20 mb-6 group-hover:bg-orange-500/20 transition-all">
+                        <i class="fa-solid fa-code text-orange-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-bold uppercase mb-4 tracking-wide">Computational Engineering</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Leveraging Python and C pipelines for mathematical processing, automation algorithms, structural physics modeling, and simulation control.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+            <div>
+                <span class="font-display text-xs text-orange-500 tracking-widest uppercase">// RECENT DEPLOYMENTS</span>
+                <h2 class="font-display text-4xl font-bold uppercase tracking-wider mt-2">Engineering Projects</h2>
+            </div>
+            <div class="text-slate-500 font-mono text-sm mt-4 md:mt-0">// SIMULATED & BUILT ARCHITECTURES</div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-slate-900/30 border border-slate-900 rounded-2xl overflow-hidden hover:border-slate-800 transition-all group flex flex-col justify-between">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-900 p-8 border-b border-slate-900/60 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 text-9xl font-display text-slate-800/10 font-bold select-001">01</div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-mono px-2.5 py-1 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20 uppercase">Thermal Simulation</span>
+                        <i class="fa-solid fa-fire text-slate-700 group-hover:text-orange-500 transition-colors"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold uppercase tracking-wide text-slate-100 group-hover:text-orange-400 transition-colors">
+                        Computational Engine Efficiency Tracker
+                    </h3>
+                </div>
+                <div class="p-8 flex-grow">
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Developed an analytical application that maps thermodynamic properties of standard IC engines. Built mathematical simulation models to identify structural heat waste patterns and compute thermal efficiency vectors.
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                        <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Python</span>
+                        <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Thermodynamics</span>
+                        <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Data Analytics</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/30 border border-slate-900 rounded-2xl overflow-hidden hover:border-slate-800 transition-all group flex flex-col justify-between">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-900 p-8 border-b border-slate-900/60 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 text-9xl font-display text-slate-800/10 font-bold select-002">02</div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-mono px-2.5 py-1 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20 uppercase">CAD Assembly</span>
+                        <i class="fa-solid fa-compass-drafting text-slate-700 group-hover:text-orange-500 transition-colors"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold uppercase tracking-wide text-slate-100 group-hover:text-orange-400 transition-colors">
+                        Parametric 4-Stroke Engine Assembly
+                    </h3>
+                </div>
+                <div class="p-8 flex-grow">
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Designed a complete 4-stroke internal combustion engine assembly using advanced CAD software. Constrained geometric features for pistons, connecting rods, crankshafts, and overhead valve configurations to map optimal clearances.
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                        <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">SolidWorks</span>
+                        <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">Parametric Modeling</span>
+                        <span class="px-2 py-1 bg-slate-950 border border-slate-800 rounded">FEA Mesh</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="bg-slate-950 border-t border-slate-900 py-16 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div>
+                <h3 class="font-display text-2xl font-bold uppercase tracking-wider mb-2">Initialize Connection</h3>
+                <p class="text-slate-400 text-sm">Let's discuss design optimizations, computing platforms, or collaborative projects.</p>
+            </div>
+            <div class="flex space-x-6 text-xl">
+                <a href="#" class="text-slate-400 hover:text-orange-500 transition-colors" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="text-slate-400 hover:text-orange-500 transition-colors" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" class="text-slate-400 hover:text-orange-500 transition-colors" title="Email"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-900/60 text-center text-xs text-slate-600 font-mono">
+            &copy; 2026 ENGINE_CORE LOGIC. ALL SYSTEMS OPERATIONAL.
+        </div>
+    </section>
+
+</body>
+</html>
+          
