@@ -212,7 +212,7 @@
         const db = firebase.database();
         const storage = firebase.storage();
         
-                // Memory Architecture Map
+                   // Memory Architecture Map
         let localPayloadMemory = {
             "hero-title": "Mechanical Engineering Layouts",
             "hero-desc": "Mechanical engineering undergraduate integrating thermodynamic structural profiles with computational algorithms, CAD component optimization design paths, and automation modeling layers.",
@@ -222,25 +222,23 @@
             "proj-desc-1": "Map state vector logic frameworks onto standard automation matrices. Translating baseline structural properties to accelerated simulation curves seamlessly.",
             "proj-title-2": "Automated Fluid Simulation Assemblies",
             "proj-desc-2": "Developing high-tolerance system layouts under variable parametric constraints. Analyzing vector yield boundaries on computational component assemblies.",
-            "profile_photo_url": "",
+            "profile_photo_url": "profile.jpg", // Points to a local file in your repository folder
             "modules": []
         };
 
 
-                      // Realtime Data Streaming Handshake Loop
-        window.addEventListener('DOMContentLoaded', () => {
-            db.ref('unified_portfolio_dataset').on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const incoming = snapshot.val();
-                    // Ingest incoming data matrix fields directly into local tracking memory
-                    Object.keys(incoming).forEach(key => {
-                        localPayloadMemory[key] = incoming[key];
-                    });
-                }
-                compileMasterLayout();
-            });
-        });
 
+                              // Local Browser Storage Handshake Loop
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLocalData = localStorage.getItem('portfolio_local_matrix');
+            if (savedLocalData) {
+                const parsedData = JSON.parse(savedLocalData);
+                Object.keys(parsedData).forEach(key => {
+                    localPayloadMemory[key] = parsedData[key];
+                });
+            }
+            compileMasterLayout();
+        });
 
 
                function compileMasterLayout() {
@@ -433,44 +431,27 @@
 
         function triggerPhotoUpload() { if (isAdminActive) document.getElementById('photo-input').click(); }
         
-                function processNewPhoto(inputElement) {
+                        function processNewPhoto(inputElement) {
             const uploadedFile = inputElement.files[0];
             if (uploadedFile) {
-                if (uploadedFile.size > 5368709120) { alert("Maximum 5GB tier exceeded."); return; }
+                document.getElementById('btn-text').innerText = "Processing Asset String...";
                 
-                document.getElementById('btn-text').innerText = "Streaming Asset (5GB Target)...";
+                const matrixReader = new FileReader();
+                matrixReader.onload = function (e) {
+                    const dataStringURL = e.target.result;
+                    
+                    // Render image instantly on viewport canvas
+                    document.getElementById('profile-img').src = dataStringURL;
+                    localPayloadMemory["profile_photo_url"] = dataStringURL;
+                    
+                    // Commit structural data frame to local browser storage cache
+                    localStorage.setItem('portfolio_local_matrix', JSON.stringify(localPayloadMemory));
+                    
+                    document.getElementById('btn-text').innerText = "Broadcast Layouts";
+                    alert("Local asset sync completed! Profile image layout updated successfully.");
+                };
                 
-                // Timestamp string addition prevents mobile browser caching overlap errors
-                const uniqueFileName = Date.now() + '_' + uploadedFile.name;
-                const storageRef = storage.ref('portfolio_assets/' + uniqueFileName);
-                const uploadTask = storageRef.put(uploadedFile);
-
-                uploadTask.on('state_changed', 
-                    (snapshot) => {
-                        // Operational Stream Logging
-                        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        console.log('Upload target matrix resolution state: ' + progress.toFixed(1) + '%');
-                    }, 
-                    (error) => {
-                        console.error(error);
-                        alert("Storage reference allocation failed. Check console and storage permissions.");
-                        document.getElementById('btn-text').innerText = "Broadcast Layouts";
-                    }, 
-                    () => {
-                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                            document.getElementById('profile-img').src = downloadURL;
-                            localPayloadMemory["profile_photo_url"] = downloadURL;
-                            
-                            // Synchronize instantly with the root reference matrix path
-                            db.ref('unified_portfolio_dataset').update({ "profile_photo_url": downloadURL }, (err) => {
-                                if(!err) {
-                                    alert("Asset sync completed! Cloud configuration mapped successfully.");
-                                }
-                                document.getElementById('btn-text').innerText = "Broadcast Layouts";
-                            });
-                        });
-                    }
-                );
+                matrixReader.readAsDataURL(uploadedFile);
             }
         }
 
