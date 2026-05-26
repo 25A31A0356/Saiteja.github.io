@@ -227,7 +227,7 @@
         };
 
 
-                // Realtime Data Streaming Handshake Loop
+                      // Realtime Data Streaming Handshake Loop
         window.addEventListener('DOMContentLoaded', () => {
             db.ref('unified_portfolio_dataset').on('value', (snapshot) => {
                 if (snapshot.exists()) {
@@ -236,17 +236,19 @@
                     Object.keys(incoming).forEach(key => {
                         localPayloadMemory[key] = incoming[key];
                     });
-                    
-                    if (localPayloadMemory["profile_photo_url"]) {
-                        document.getElementById('profile-img').src = localPayloadMemory["profile_photo_url"];
-                    }
                 }
                 compileMasterLayout();
             });
         });
 
 
-        function compileMasterLayout() {
+
+               function compileMasterLayout() {
+            // Core Graphic Engine: Enforce profile image sync from state memory
+            if (localPayloadMemory["profile_photo_url"] && localPayloadMemory["profile_photo_url"].trim() !== "") {
+                document.getElementById('profile-img').src = localPayloadMemory["profile_photo_url"];
+            }
+
             // Apply text definitions across static nodes
             document.querySelectorAll('[data-edit-id]').forEach(element => {
                 const lookupID = element.getAttribute('data-edit-id');
@@ -261,7 +263,7 @@
                 return;
             }
 
-          localPayloadMemory["modules"].forEach((module, idx) => {
+            localPayloadMemory["modules"].forEach((module, idx) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = "relative group/mod w-full border border-slate-900 bg-slate-900/10 p-8 rounded-2xl transition-all";
                 
@@ -314,6 +316,7 @@
 
             if (isAdminActive) injectEditingStyles();
         }
+
 
         function renderStaticChart(canvasId) {
             const ctx = document.getElementById(canvasId).getContext('2d');
